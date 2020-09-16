@@ -23,7 +23,7 @@ $(document).ready(function() {
     })
 
     $(`#modButton`).click(function() {
-        alert("You have found the rare Button of Coming SoonTM!");
+        alert("You have found the rare Button of Coming SoonTM-ish!");
         // You have found the even rarer Comment of You Sneaky Console Reader!
         /*var pw = prompt(`Password`);
         if (pw != null) {
