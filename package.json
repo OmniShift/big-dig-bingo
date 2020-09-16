@@ -1,0 +1,21 @@
+{
+  "name": "big-dig-bingo",
+  "version": "1.0.0",
+  "description": "Big Dig bingo card generator",
+  "author": "OmniShift",
+  "main": "server.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "pg": "^8.3.3"
+  },
+  "license": "ISC",
+  "keywords": [
+    "Nook",
+    "Big Dig",
+    "bingo"
+  ]
+}
