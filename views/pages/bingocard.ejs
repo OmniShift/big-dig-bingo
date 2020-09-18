@@ -7,6 +7,7 @@
     <script src="js/bingocard.js"></script> 
 </head>
 <body>
+    <div id="bookmarkReminder">Bookmark this page or write down the 5-character code<BR>to access your bingo card in the future!</div>
     <table>
         <tr class="grass">
             <td id="title">
@@ -60,20 +61,22 @@
                         </td>
                     </tr>
                 </table>
+                <div id="markedOverlay">
+                    <% for (var row = 0; row < 5; row++) {%>
+                        <% for (var col = 0; col < 5; col++) {%>
+                            <div>
+                                <img height="100%" src="images/marked.png" class="<%= marked[row][col] %>" >
+                            </div>
+                        <% } %>
+                    <% } %>
+                </table>
             </td>
         </tr>
     </table>
-    <svg id="markedSvg">
-        <% for (var i = 0; i < 5; i++) {%>
-            <% for (var j = 0; j < 5; j++) {%>
-                <image x="calc(20.1% * <%= i %>)" y="calc(20.1% * <%= j %>)" width="20%" height="19.5%" href="images/marked.png" class="<%= marked[i][j+1] %>" />
-            <% } %>
-        <% } %>
-    </svg>
     <svg id="cellSvg">
-        <% for (var i = 0; i < 5; i++) {%>
-            <% for (var j = 0; j < 5; j++) {%>
-                <rect x="calc(20.1% * <%= i %>)" y="calc(20.1% * <%= j %>)" onclick="changeMarked(<%= i %>, <%= j %>)" />
+        <% for (var row = 0; row < 5; row++) {%>
+            <% for (var col = 0; col < 5; col++) {%>
+                <rect x="calc(20.1% * <%= col %>)" y="calc(20.1% * <%= row %>)" onclick="changeMarked(<%= row %>, <%= col %>)" />
             <% } %>
         <% } %>
     </svg>

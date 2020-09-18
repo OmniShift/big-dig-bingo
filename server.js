@@ -20,6 +20,7 @@ app.get('/', (req, res) => res.render('pages/index'));
 
 app.post('/gen_card', async(req, res) => {
     console.log(`Calling POST for \'/gen_card\' with username ${req.body.userName}`);
+    var userName = req.body.userName;
     try {
         const client = await pool.connect();
         var bingoRoundResult = await client.query(`SELECT * FROM bingo_round ORDER BY iteration DESC LIMIT 1`);
@@ -33,7 +34,8 @@ app.post('/gen_card', async(req, res) => {
         if (cellValues == null) {
             res.send(`Error 1: We encountered an issue when generating your bingo card. Please find your nearest Nook scapegoat for public shaming`);
         }
-        var isMarked = Array.from(new Array(5), x => Array.from(new Array(5), y => false));
+        var isMarked = Array.from(new Array(5), x => Array.from(new Array(5), y => ""));
+        isMarked[2][2] = "marked"; // pre-mark the FREE! cell
 
         var bingoCardResults = await client.query(`SELECT cardurl FROM bingo_cards WHERE bingoround = ${lastRound}`);
         bingoCardResults = parseQueryResult(bingoCardResults);
@@ -56,9 +58,8 @@ app.post('/gen_card', async(req, res) => {
             }
         }
 
-        var userName = req.params.userName ? req.params.userName : ``;
         if (cardUrl != `` && cardUrl != null) {
-            console.log(`create bingo_card with url ` + cardUrl);
+            console.log(`create bingo_card with url ${cardUrl} and username ${userName}`);
             await client.query(`INSERT INTO bingo_cards (bingoround, cardurl, cellvalues, marked, username) VALUES (${lastRound}, \'${cardUrl}\', \'${JSON.stringify(cellValues)}\', \'${JSON.stringify(isMarked)}\', \'${userName}\')`);
             client.release();
             res.send(`/bingocard=${cardUrl}`);
@@ -98,10 +99,10 @@ app.get('/bingocard=:cardUrl', async (req, res) => {
 });
 
 app.post('/save_card', async(req, res) => {
-    console.log(`Calling POST for \'/save_card\' for cardurl ${req.body.cardurl}`);
+    console.log(`Calling POST for \'/save_card\' for cardurl ${req.body.cardUrl} and marked ${JSON.stringify(req.body.marked)}`);
     try {
         const client = await pool.connect();
-        await client.query(`UPDATE bingo_cards SET marked = \'${JSON.stringify(req.body.marked)}\' WHERE cardurl = \'${req.body.cardurl}\'`);
+        await client.query(`UPDATE bingo_cards SET marked = \'${JSON.stringify(req.body.marked)}\' WHERE cardurl = \'${req.body.cardUrl}\'`);
         client.release();
         res.send(`success`);
     } catch (err) {
@@ -121,7 +122,7 @@ app.get('/moderation', async(req, res) => {
 });
 
 function pickCellValues(allValues) {
-    var pickedValues = Array.from(new Array(5), x => Array.from(new Array(5), y => false));
+    var pickedValues = Array.from(new Array(5), x => Array.from(new Array(5), y => ""));
     for (var row = 0; row < 5; row++) {
         for (var col = 0; col < 5; col++) {
             if (allValues.length == 0) {
@@ -176,5 +177,5 @@ function parseQueryResult(queryResult) {
 // TODO allow mods to start a new iteration (check if a card has a bingo before starting a new iteration, add start datetime of current iteration to response)
 // TODO specify cell values for which iteration they start being used
 
-/*INSERT INTO public.cell_values (cellvalue, category, bingoround) VALUES
-('Digging a hole in the ground for the night', 'GENERIC_ACTION', 1)*/
+/*INSERT INTO public.cell_values (cellvalue, category, bingoround, active) VALUES
+('Digging a hole in the ground for the night', 'GENERIC_ACTION', 1, true)*/
