@@ -6,7 +6,7 @@ function changeMarked(row, col) {
 function saveMarked() {
     var markedArray = [];
     for (var image in document.getElementById("markedSvg").children) {
-        markedArray.push(image.className == "marked");
+        markedArray.push(image.className);
     }
     var marked = [];
     for (var i = 0; i < 5; i++) {
