@@ -15,7 +15,7 @@ table {
 }
 
 #padding {
-    padding-top: 15%;
+    padding-top: 10%;
 }
 
 button {
@@ -31,4 +31,41 @@ button {
 }
 #modButton {
     margin-top: 10%;
+}
+
+#popupBackground {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+}
+.closePopupButton {
+    margin-top: 5%;
+    width: 60%;
+}
+#howToPlayDiv {
+    position: absolute;
+    height: 90%;
+}
+#howToPlayBook {
+    position: relative;
+    background-image: url('../images/minecraft_book.png');
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 80%;
+    margin: auto;
+}
+#howToPlayText {
+    position: relative;
+    top: 10%;
+    margin: 14%;
+    max-height: 75%;
+    overflow-y: auto;
+
+    text-align: left;
+    font-size: 1.2em;
 }
