@@ -3,14 +3,11 @@ $(document).ready(function() {
         var name = prompt(`Name`);
         if (name != null) {
             $.post(`../gen_card`, { username: name }, function(result) {
-                if (result != null) {
-                    if (result.includes(`/bingocard=`)) {
-                        var cardUrl = result.split(`=`)[1];
-                        window.location.href = `/bingocard=${cardUrl}`;
-                    } else {
-                        alert(result);
-                    }
-                }
+                // TODO error handling needs to be fixed
+                /*if (result != null && result.includes(`/bingocard=`)) {
+                    var cardUrl = result.split(`=`)[1];
+                    window.location.href = `/bingocard=${cardUrl}`;
+                }*/
             });
         }
     })
@@ -19,9 +16,10 @@ $(document).ready(function() {
         var cardUrl = prompt(`Card code`);
         if (cardUrl != null) {
             $.get(`../bingocard=${cardUrl}`, function(result) {
-                if (result != null && !result.includes(`/bingocard=`)) {
+                // TODO error handling needs to be fixed
+                /*if (result != null && result.includes(`Error`)) {
                     alert(result);
-                }
+                }*/
             });
         }
     })

@@ -93,7 +93,7 @@ app.get('/bingocard=:cardUrl', async (req, res) => {
         client.release();
     } catch (err) {
         console.error(err);
-        res.send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
+        res.status(500).send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
     }
 });
 
