@@ -4,10 +4,10 @@ $(document).ready(function() {
         if (name != null) {
             $.post(`../gen_card`, { username: name }, function(result) {
                 // TODO error handling needs to be fixed
-                /*if (result != null && result.includes(`/bingocard=`)) {
+                if (result != null) {
                     var cardUrl = result.split(`=`)[1];
                     window.location.href = `/bingocard=${cardUrl}`;
-                }*/
+                }
             });
         }
     })
@@ -15,13 +15,17 @@ $(document).ready(function() {
     $(`#loadCardButton`).click(function() {
         var cardUrl = prompt(`Card code`);
         if (cardUrl != null) {
+            window.location.href = `/bingocard=${cardUrl}`;
+        }
+        /*var cardUrl = prompt(`Card code`);
+        if (cardUrl != null) {
             $.get(`../bingocard=${cardUrl}`, function(result) {
                 // TODO error handling needs to be fixed
-                /*if (result != null && result.includes(`Error`)) {
+                if (result != null) {
                     alert(result);
-                }*/
+                }
             });
-        }
+        }*/
     })
 
     $(`#howToPlayButton`).click(function() {
@@ -34,7 +38,6 @@ $(document).ready(function() {
         htpBook.css(`width`, `${ (htpBook.height() / 1.23) }px`);
         
         var htpText = $(`#howToPlayText`);
-        // htpText.css(`margin`, `${ (htpBook.height() / 10) }px`);
 
         var howToPlayTexts = [];
         howToPlayTexts.push(`<h3><center>How to play</center></h3>

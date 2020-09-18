@@ -106,7 +106,7 @@ app.post('/save_card', async(req, res) => {
         res.send(`success`);
     } catch (err) {
         console.error(err);
-        res.send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
+        res.status(500).send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
     }
 });
 
@@ -116,7 +116,7 @@ app.get('/moderation', async(req, res) => {
         res.send("Youre not ready to moderate bingo yet. And neither am I, which is why you see this message");
     } catch (err) {
         console.error(err);
-        res.send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
+        res.status(500).send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
     }
 });
 
@@ -154,7 +154,7 @@ function parseQueryResult(queryResult) {
     return queryResult.rows;
 }
 
-app.get('/test', (req, res) => {
+/*app.get('/test', (req, res) => {
     var resBody = {
         cardurl: "aB1Ba",
         cellvalues: [],
@@ -171,7 +171,7 @@ app.get('/test', (req, res) => {
         resBody.cellvalues.push(row);
     }
     res.render('pages/bingocard', resBody);
-});
+});*/
 
 // TODO allow mods to start a new iteration (check if a card has a bingo before starting a new iteration, add start datetime of current iteration to response)
 // TODO specify cell values for which iteration they start being used
