@@ -138,14 +138,18 @@ app.get('/moderation', async(req, res) => {
                 console.log(`log part 2.${i}`);
                 var cell = cellValueResults[i];
                 var inCategories = false;
+                console.log(`log part 2.${i}; cell: ${JSON.stringify(cell)}`);
                 for (var cat = 0; cat < categories.length; i++) {
+                    console.log(`log part 2.${i}; checking category ${cat}: ${categories[cat].name}`);
                     if (categories[cat].name == cell.category) {
+                        console.log(`log part 2.${i}; category ${categories[cat].name} found at cat ${cat}`);
                         inCategories = true;
                         categories[cat].cellValues.push({
                             cellValue: cell.cellValue,
                             marked: cell.modmarked,
                             id: cell.id
                         });
+                        break;
                     }
                 }
                 if (!inCategories) {
@@ -159,11 +163,11 @@ app.get('/moderation', async(req, res) => {
                     })
                 }
             }
-            console.log(`categories: ${categories}`);
+            console.log(`categories: ${JSON.stringify(categories)}`);
             var resBody = {
                 categories: categories
             }
-            console.log(`resBody: ${resBody}`);
+            console.log(`resBody: ${JSON.stringify(resBody)}`);
             console.log(`Releasing client...`);
             client.release();
             console.log(`Going to render...`);
