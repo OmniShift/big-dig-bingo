@@ -6,7 +6,7 @@ const ejs = require('ejs');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 const { Pool } = require('pg');
-// const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
+const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
@@ -124,14 +124,13 @@ app.get('/moderation', async(req, res) => {
         console.warn(`User attempted to access moderation page with incorrect password ${req.query.password}`);
         res.status(403).send(`Password incorrect`);
     } else {
+        const client = await pool.connect();
         try {
-            const client = await pool.connect();
             var bingoRoundResult = await client.query(`SELECT * FROM bingo_round ORDER BY iteration DESC LIMIT 1`);
             bingoRoundResult = parseQueryResult(bingoRoundResult);
             var lastRound = bingoRoundResult[0].iteration;
             var cellValueResults = await client.query(`SELECT id, cellvalue, category, modmarked FROM cell_values WHERE active = true AND bingoround <= ${lastRound}`);
             cellValueResults = parseQueryResult(cellValueResults);
-            client.release();
 
             var categories = [];
             for (var i = 0; i < cellValueResults.length; i++) {
@@ -162,7 +161,9 @@ app.get('/moderation', async(req, res) => {
                 categories: categories
             }
             res.render(`pages/moderation`, resBody);
+            client.release();
         } catch (err) {
+            client.release();
             console.error(err);
             res.status(500).send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
         }
@@ -220,7 +221,7 @@ io.on('connection', (socket) => {
             if (err) throw err
             client.query(`UPDATE bingo_cards SET modmarked = \'${data.marked}\' WHERE id = \'${data.id}\'`);
             client.release();
-          })
+        });
     });
 });
 
