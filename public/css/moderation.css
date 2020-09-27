@@ -1,0 +1,46 @@
+@import url("generic.css");
+
+#scrollable {
+    height: 100%;
+    width: 50%;
+    margin: auto;
+    overflow: scroll;
+}
+
+.category {
+    background-color: rgb(206, 206, 206);
+    border: 2px solid black;
+    margin-top: 4px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    /*width: 50%;*/
+    box-shadow:
+        inset -4px -4px #585858,
+        inset 4px 4px #FFF7;
+
+    color: rgb(49, 49, 49);
+}
+.category .categoryName {
+    font-size: 18px;
+}
+.category .cellValue {
+    background-color: rgb(139, 139, 139);
+    margin-bottom: 5px;
+    margin-left: 3%;
+    margin-right: 3%;
+    box-shadow:
+        inset -2px -2px #FFF,
+        inset 2px 2px #585858;
+    
+    font-size: 14px;
+    padding-top: 1.8%;
+}
+.category .cellValue.marked {
+    background-color: rgb(255, 197, 197);
+}
+.category .cellValue.marked:hover {
+    background-color: rgb(255, 220, 220);
+}
+.category .cellValue:hover {
+    background-color: rgb(197, 197, 197);
+}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Nook - Big Dig bingo</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var pw = prompt(`Password`);
+        if (pw != null) {
+            $.get(`../moderation`, { password: pw })
+            .done(function(res) {
+                document.write(res);
+            }).fail(function(res) {
+                alert(res.responseText);
+            });
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

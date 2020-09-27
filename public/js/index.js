@@ -3,10 +3,11 @@ $(document).ready(function() {
         var name = prompt(`Name`);
         if (name != null) {
             $.post(`../gen_card`, { username: name }, function(result) {
-                // TODO error handling needs to be fixed
-                if (result != null) {
-                    var cardUrl = result.split(`=`)[1];
+                var cardUrl = result.split(`=`)[1];
+                if (cardUrl != undefined) {
                     window.location.href = `/bingocard=${cardUrl}`;
+                } else {
+                    alert(result);
                 }
             });
         }
@@ -50,12 +51,15 @@ $(document).ready(function() {
     })
 
     $(`#modButton`).click(function() {
-        alert(`You have found the rare Button of Coming Soon`);
-        // You have found the even rarer Comment of You Sneaky Console Reader!
-        /*var pw = prompt(`Password`);
+        var pw = prompt(`Password`);
         if (pw != null) {
-            $.get(`../modButton`, { password: pw });
-        }*/
+            $.get(`../moderation`, { password: pw })
+            .done(function(res) {
+                document.write(res);
+            }).fail(function(res) {
+                alert(res.responseText);
+            });
+        }
     })
 
     $(`.closePopupButton`).click(function() {
