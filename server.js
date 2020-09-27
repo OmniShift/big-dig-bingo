@@ -149,7 +149,7 @@ app.get('/moderation', async(req, res) => {
                 }
                 if (!inCategories) {
                     categories.push({
-                        name: cellV.category,
+                        name: cell.category,
                         cellValues: {
                             cellValue: cell.cellValue,
                             marked: cell.modmarked,
