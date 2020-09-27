@@ -129,9 +129,8 @@ app.get('/moderation', async(req, res) => {
             var bingoRoundResult = await client.query(`SELECT * FROM bingo_round ORDER BY iteration DESC LIMIT 1`);
             bingoRoundResult = parseQueryResult(bingoRoundResult);
             var lastRound = bingoRoundResult[0].iteration;
-            var cellValueResults = await client.query(`SELECT id, cellvalue, category, modmarked FROM cell_values WHERE active = true AND bingoround <= ${lastRound}`);
+            var cellValueResults = await client.query(`SELECT id, cellvalue, category, modmarked FROM cell_values WHERE active = true AND bingoround <= ${lastRound} ORDER BY id ASC`);
             cellValueResults = parseQueryResult(cellValueResults);
-            console.log(`log part 1`);
 
             var categories = [];
             for (var i = 0; i < cellValueResults.length; i++) {
@@ -162,7 +161,6 @@ app.get('/moderation', async(req, res) => {
             var resBody = {
                 categories: categories
             }
-            console.log(`resBody: ${JSON.stringify(resBody)}`);
             client.release();
             res.render(`pages/moderation`, resBody);
         } catch (err) {
@@ -214,11 +212,7 @@ io.on('connection', (socket) => {
 
     socket.on('toggle mark', (data) => {
         console.log(`toggling marked cell ${JSON.stringify(data)}`);
-        socket.broadcast.emit('toggle mark', data);
-        /*const client = await pool.connect(); // TODO fix (await doesnt work)
-        await client.query(`UPDATE bingo_cards SET modmarked = \'${data.marked}\' WHERE id = \'${data.id}\'`);
-        client.release();*/
-
+        socket.broadcast.emit('toggle mark', data.id);
         pool.connect((err, client, done) => {
             if (err) throw err
             client.query(`UPDATE cell_values SET modmarked = \'${data.marked}\' WHERE id = \'${data.id}\'`);
@@ -246,8 +240,6 @@ io.on('connection', (socket) => {
     res.render('pages/bingocard', resBody);
 });*/
 
-// TODO allow mods to start a new iteration (check if a card has a bingo before starting a new iteration, add start datetime of current iteration to response)
-// TODO specify cell values for which iteration they start being used
 
 /*INSERT INTO public.cell_values (cellvalue, category, bingoround, active) VALUES
 ('Digging a hole in the ground for the night', 'GENERIC_ACTION', 1, true)*/
