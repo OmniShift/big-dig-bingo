@@ -139,7 +139,7 @@ app.get('/moderation', async(req, res) => {
                 var cell = cellValueResults[i];
                 var inCategories = false;
                 console.log(`log part 2.${i}; cell: ${JSON.stringify(cell)}`);
-                for (var cat = 0; cat < categories.length; i++) {
+                for (var cat = 0; cat < categories.length; cat++) {
                     console.log(`log part 2.${i}; checking category ${cat}: ${categories[cat].name}`);
                     if (categories[cat].name == cell.category) {
                         console.log(`log part 2.${i}; category ${categories[cat].name} found at cat ${cat}`);
