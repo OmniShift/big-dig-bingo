@@ -131,10 +131,11 @@ app.get('/moderation', async(req, res) => {
             var lastRound = bingoRoundResult[0].iteration;
             var cellValueResults = await client.query(`SELECT id, cellvalue, category, modmarked FROM cell_values WHERE active = true AND bingoround <= ${lastRound}`);
             cellValueResults = parseQueryResult(cellValueResults);
+            console.log(`log part 1`);
 
             var categories = [];
-            console.log()
             for (var i = 0; i < cellValueResults.length; i++) {
+                console.log(`log part 2.${i}`);
                 var cell = cellValueResults[i];
                 var inCategories = false;
                 for (var cat = 0; cat < categories.length; i++) {
