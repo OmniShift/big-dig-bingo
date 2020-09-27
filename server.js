@@ -221,7 +221,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('toggle mark', (data) => {
-        console.log(`toggling marked cell ${data}`);
+        console.log(`toggling marked cell ${JSON.stringify(data)}`);
         socket.broadcast.emit('toggle mark', data);
         /*const client = await pool.connect(); // TODO fix (await doesnt work)
         await client.query(`UPDATE bingo_cards SET modmarked = \'${data.marked}\' WHERE id = \'${data.id}\'`);
