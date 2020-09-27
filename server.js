@@ -150,11 +150,11 @@ app.get('/moderation', async(req, res) => {
                 if (!inCategories) {
                     categories.push({
                         name: cell.category,
-                        cellValues: {
+                        cellValues: [{
                             cellValue: cell.cellValue,
                             marked: cell.modmarked,
                             id: cell.id
-                        }
+                        }]
                     })
                 }
             }
