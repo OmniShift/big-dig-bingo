@@ -221,7 +221,7 @@ io.on('connection', (socket) => {
 
         pool.connect((err, client, done) => {
             if (err) throw err
-            client.query(`UPDATE bingo_cards SET modmarked = \'${data.marked}\' WHERE id = \'${data.id}\'`);
+            client.query(`UPDATE cell_values SET modmarked = \'${data.marked}\' WHERE id = \'${data.id}\'`);
             client.release();
         });
     });
