@@ -124,8 +124,8 @@ app.get('/moderation', async(req, res) => {
         console.warn(`User attempted to access moderation page with incorrect password ${req.query.password}`);
         res.status(403).send(`Password incorrect`);
     } else {
-        const client = await pool.connect();
         try {
+            const client = await pool.connect();
             var bingoRoundResult = await client.query(`SELECT * FROM bingo_round ORDER BY iteration DESC LIMIT 1`);
             bingoRoundResult = parseQueryResult(bingoRoundResult);
             var lastRound = bingoRoundResult[0].iteration;
@@ -133,6 +133,7 @@ app.get('/moderation', async(req, res) => {
             cellValueResults = parseQueryResult(cellValueResults);
 
             var categories = [];
+            console.log()
             for (var i = 0; i < cellValueResults.length; i++) {
                 var cell = cellValueResults[i];
                 var inCategories = false;
@@ -157,13 +158,17 @@ app.get('/moderation', async(req, res) => {
                     })
                 }
             }
+            console.log(`categories: ${categories}`);
             var resBody = {
                 categories: categories
             }
+            console.log(`resBody: ${resBody}`);
+            console.log(`Releasing client...`);
+            client.release();
+            console.log(`Going to render...`);
             res.render(`pages/moderation`, resBody);
-            client.release();
+            console.log(`Rendering complete!`);
         } catch (err) {
-            client.release();
             console.error(err);
             res.status(500).send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
         }
