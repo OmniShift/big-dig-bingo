@@ -10,6 +10,7 @@ function toggleMarked(elem) {
 }
 
 socket.on('toggle mark', (elemId) => {
+    console.log(`Toggling element c${elemId}`)
     document.getElementById(`c${elemId}`).classList.toggle('marked');
 });
 
