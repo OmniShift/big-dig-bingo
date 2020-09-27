@@ -135,17 +135,13 @@ app.get('/moderation', async(req, res) => {
 
             var categories = [];
             for (var i = 0; i < cellValueResults.length; i++) {
-                console.log(`log part 2.${i}`);
                 var cell = cellValueResults[i];
                 var inCategories = false;
-                console.log(`log part 2.${i}; cell: ${JSON.stringify(cell)}`);
                 for (var cat = 0; cat < categories.length; cat++) {
-                    console.log(`log part 2.${i}; checking category ${cat}: ${categories[cat].name}`);
                     if (categories[cat].name == cell.category) {
-                        console.log(`log part 2.${i}; category ${categories[cat].name} found at cat ${cat}`);
                         inCategories = true;
                         categories[cat].cellValues.push({
-                            cellValue: cell.cellValue,
+                            cellValue: cell.cellvalue,
                             marked: cell.modmarked,
                             id: cell.id
                         });
@@ -156,23 +152,19 @@ app.get('/moderation', async(req, res) => {
                     categories.push({
                         name: cell.category,
                         cellValues: [{
-                            cellValue: cell.cellValue,
+                            cellValue: cell.cellvalue,
                             marked: cell.modmarked,
                             id: cell.id
                         }]
                     })
                 }
             }
-            console.log(`categories: ${JSON.stringify(categories)}`);
             var resBody = {
                 categories: categories
             }
             console.log(`resBody: ${JSON.stringify(resBody)}`);
-            console.log(`Releasing client...`);
             client.release();
-            console.log(`Going to render...`);
             res.render(`pages/moderation`, resBody);
-            console.log(`Rendering complete!`);
         } catch (err) {
             console.error(err);
             res.status(500).send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
