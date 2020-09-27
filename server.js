@@ -1,8 +1,12 @@
 const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 const ejs = require('ejs');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 const { Pool } = require('pg');
+// const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
@@ -10,12 +14,13 @@ const pool = new Pool({
     }
 });
 
-var app = express();
+server.listen(PORT, () => console.log(`Listening on ${PORT}`)); // listen from server to implement socket.io
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }))
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
 app.get('/', (req, res) => res.render('pages/index'));
 
 app.post('/gen_card', async(req, res) => {
@@ -27,7 +32,7 @@ app.post('/gen_card', async(req, res) => {
         bingoRoundResult = parseQueryResult(bingoRoundResult);
         var lastRound = bingoRoundResult[0].iteration;
         console.log(`Last bingo round: ${lastRound}`);
-        var cellValueResults = await client.query(`SELECT cellvalue FROM cell_values WHERE active = true AND bingoround = ${lastRound}`);
+        var cellValueResults = await client.query(`SELECT cellvalue FROM cell_values WHERE active = true AND bingoround <= ${lastRound}`);
         cellValueResults = parseQueryResult(cellValueResults);
 
         var cellValues = pickCellValues(cellValueResults);
@@ -86,7 +91,6 @@ app.get('/bingocard=:cardUrl', async (req, res) => {
         }
         var resBody = {
             username: bingoCard[0].username,
-            isNew: false,
             cellvalues: JSON.parse(bingoCard[0].cellvalues),
             marked: JSON.parse(bingoCard[0].marked)
         }
@@ -112,12 +116,56 @@ app.post('/save_card', async(req, res) => {
 });
 
 app.get('/moderation', async(req, res) => {
-    try {
-        console.log(`Calling GET for \'/moderation\'`);
-        res.send("Youre not ready to moderate bingo yet. And neither am I, which is why you see this message");
-    } catch (err) {
-        console.error(err);
-        res.status(500).send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
+    console.log(`Calling GET for \'/moderation\'`);
+    if (req.query.password == null) {
+        console.log(`User attempted to access moderation page without password`);
+        res.render(`pages/moderation_pw`);
+    } else if (req.query.password != `w8Q9mP2UGf6Q`) {
+        console.warn(`User attempted to access moderation page with incorrect password ${req.query.password}`);
+        res.status(403).send(`Password incorrect`);
+    } else {
+        try {
+            const client = await pool.connect();
+            var bingoRoundResult = await client.query(`SELECT * FROM bingo_round ORDER BY iteration DESC LIMIT 1`);
+            bingoRoundResult = parseQueryResult(bingoRoundResult);
+            var lastRound = bingoRoundResult[0].iteration;
+            var cellValueResults = await client.query(`SELECT id, cellvalue, category, modmarked FROM cell_values WHERE active = true AND bingoround <= ${lastRound}`);
+            cellValueResults = parseQueryResult(cellValueResults);
+            client.release();
+
+            var categories = [];
+            for (var i = 0; i < cellValueResults.length; i++) {
+                var cell = cellValueResults[i];
+                var inCategories = false;
+                for (var cat = 0; cat < categories.length; i++) {
+                    if (categories[cat].name == cell.category) {
+                        inCategories = true;
+                        categories[cat].cellValues.push({
+                            cellValue: cell.cellValue,
+                            marked: cell.modmarked,
+                            id: cell.id
+                        });
+                    }
+                }
+                if (!inCategories) {
+                    categories.push({
+                        name: cellV.category,
+                        cellValues: {
+                            cellValue: cell.cellValue,
+                            marked: cell.modmarked,
+                            id: cell.id
+                        }
+                    })
+                }
+            }
+            var resBody = {
+                categories: categories
+            }
+            res.render(`pages/moderation`, resBody);
+        } catch (err) {
+            console.error(err);
+            res.status(500).send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
+        }
     }
 });
 
@@ -154,6 +202,27 @@ function parseQueryResult(queryResult) {
     console.log(`QUERY RESULTS: ` + JSON.stringify(queryResult.rows));
     return queryResult.rows;
 }
+
+io.on('connection', (socket) => {
+    console.log(`User connected`);
+    socket.on('disconnect', () => {
+        console.log(`User disconnected`);
+    });
+
+    socket.on('toggle mark', (data) => {
+        console.log(`toggling marked cell ${data}`);
+        socket.broadcast.emit('toggle mark', data);
+        /*const client = await pool.connect(); // TODO fix (await doesnt work)
+        await client.query(`UPDATE bingo_cards SET modmarked = \'${data.marked}\' WHERE id = \'${data.id}\'`);
+        client.release();*/
+
+        pool.connect((err, client, done) => {
+            if (err) throw err
+            client.query(`UPDATE bingo_cards SET modmarked = \'${data.marked}\' WHERE id = \'${data.id}\'`);
+            client.release();
+          })
+    });
+});
 
 /*app.get('/test', (req, res) => {
     var resBody = {

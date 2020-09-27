@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>The Nook - Big Dig bingo</title>
+    <link rel="stylesheet" href="css/moderation.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/moderation.js"></script>
+</head>
+<body>
+    <div id="scrollable">
+        <% for (var cat = 0; cat < categories.length; cat++) {%>
+            <div class="category">
+                <div class="categoryName">
+                    <%= categories[cat].name %>
+                </div>
+                <% for (var val = 0; val < categories[cat].cellValues.length; val++) {%>
+                    <div id="c<%= categories[cat].cellValues[val].id %>" class="cellValue <%= categories[cat].cellValues[val].marked %>" onclick="toggleMarked(this)">
+                        <%= categories[cat].cellValues[val].cellValue %>
+                    </div>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>
