@@ -57,6 +57,7 @@ $(document).ready(function() {
             .done(function(res) {
                 document.write(res);
             }).fail(function(res) {
+                console.error(`ERROR: GET \/moderation returned: ${JSON.stringify(res)}`);
                 alert(res.responseText);
             });
         }
