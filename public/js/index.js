@@ -46,7 +46,7 @@ $(document).ready(function() {
             When you do, bookmark the page or note the 5 characters at the end of the URL so you can load it later. 
             Whenever you see a Big Dig streamer do something that's on your card, click to mark it. 
             When you have 5 marked fields in a row, column, or diagonal, you win!
-            Save your bingo card and inform a moderator with your URL or 5-character card code.`);
+            Inform a moderator and tell them your 5-character card code to confirm your win.`);
         htpText.html(howToPlayTexts[0]);
     })
 
