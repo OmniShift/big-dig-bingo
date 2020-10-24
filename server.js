@@ -198,7 +198,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('save bingocard', (data) => {
-        console.log(`toggling marked cell ${JSON.stringify(data)}`);
+        console.log(`saving bingo card ${JSON.stringify(data)}`);
         pool.connect((err, client, done) => {
             if (err) throw err
             client.query(`UPDATE bingo_cards SET marked = \'${data.marked}\' WHERE cardurl = \'${data.cardUrl}\'`);
