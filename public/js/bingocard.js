@@ -39,6 +39,12 @@ window.onload = function() {
             svgChildren[index].setAttribute("y", (19 * row) + "%");
         }
     }
+
+    if (window.innerHeight <= 750) {
+        document.getElementById("bingoValues").style.fontSize = "0.8em";
+    } else if (window.innerHeight <= 810) {
+        document.getElementById("bingoValues").style.fontSize = "0.9em";
+    }
 };
 
 function percentifyWidth(val) {

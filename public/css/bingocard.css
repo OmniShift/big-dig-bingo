@@ -63,19 +63,21 @@ body {
     visibility: visible;
 }
 
+#bingoValues {
+    font-size: 1em;
+}
+
 #bingoValues div {
     height: 13%;
     width: 10%;
     position: absolute;
     margin: 0.2%;
-    font-size: 1em;
     color: rgb(186, 175, 173);
     text-shadow:
      -1px -1px 0 rgb(29, 25, 31),  
       1px -1px 0 rgb(29, 25, 31),
       -2px 3px 0 rgb(29, 25, 31),
        2px 3px 0 rgb(29, 25, 31);
-    overflow-y: auto;
     border: 1px solid rgb(29, 25, 31);
 }
 
@@ -85,7 +87,7 @@ body {
     position: absolute;
     margin: 0.2%;
     color: rgb(186, 175, 173);
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 svg {
