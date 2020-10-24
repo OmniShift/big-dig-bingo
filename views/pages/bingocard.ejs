@@ -4,79 +4,58 @@
     <title>The Nook - Big Dig bingo</title>
     <link rel="stylesheet" href="css/bingocard.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="js/bingocard.js"></script> 
+    <script src="js/bingocard.js"></script>
 </head>
 <body>
-    <div id="bookmarkReminder">Bookmark this page or write down the 5-character code<BR>to access your bingo card in the future!</div>
-    <table>
-        <tr class="grass">
-            <td id="title">
+    <div id="bookmarkReminder">Bookmark this page or write down the 5-character code
+        <BR>to access your bingo card in the future!
+        <BR>NOTE: Your changes will be saved automatically.</div>
+    <div id="main">
+        <div class="grass">
+            <img src="images/logo-grey.png">
+        </div>
+        <div class="dirt">
+            <div id="bingoLetters">
                 <div>
-                    <img src="images/logo-grey.png">
+                    <img height="100%" src="images/letter-B.png">
                 </div>
-            </td>
-        </tr>
-        <tr class="dirt">
-            <td>
-                <table id="bingoTable">
-                    <tr id="bingoLine">
-                        <th>
-                            <span>
-                                B
-                            </span>
-                        </th>
-                        <th>
-                            <span>
-                                I
-                            </span>
-                        </th>
-                        <th>
-                            <span>
-                                N
-                            </span>
-                        </th>
-                        <th>
-                            <span>
-                                G
-                            </span>
-                        </th>
-                        <th>
-                            <span>
-                                O
-                            </span>
-                        </th>
-                    </tr>
-                    <% for (var i = 0; i < 5; i++) {%>
-                        <tr>
-                            <% for (var j = 0; j < 5; j++) {%>
-                                <td>
-                                    <%=cellvalues[i][j] %>
-                                </td>
-                            <% } %>
-                        </tr>
+                <div>
+                    <img height="100%" src="images/letter-I.png">
+                </div>
+                <div>
+                    <img height="100%" src="images/letter-N.png">
+                </div>
+                <div>
+                    <img height="100%" src="images/letter-G.png">
+                </div>
+                <div>
+                    <img height="100%" src="images/letter-O.png">
+                </div>
+            </div>
+            <div id="bingoValues">
+                <% for (var i = 0; i < 5; i++) {%>
+                    <% for (var j = 0; j < 5; j++) {%>
+                        <div>
+                            X
+                        </div>
                     <% } %>
-                    <tr id="saveTR">
-                        <td colspan="5">
-                            <button id="saveButton" onclick="saveMarked()">Save</button>
-                        </td>
-                    </tr>
-                </table>
-                <div id="markedOverlay">
-                    <% for (var row = 0; row < 5; row++) {%>
-                        <% for (var col = 0; col < 5; col++) {%>
-                            <div>
-                                <img height="100%" src="images/marked.png" class="<%= marked[row][col] %>" >
-                            </div>
-                        <% } %>
+                <% } %>
+            </div>
+            <div id="bingoMarked">
+                <% for (var row = 0; row < 5; row++) {%>
+                    <% for (var col = 0; col < 5; col++) {%>
+                        <div>
+                            <img height="100%" src="images/marked.png" class="<%= marked[row][col] %>">
+                        </div>
                     <% } %>
-                </table>
-            </td>
-        </tr>
-    </table>
+                <% } %>
+            </div>
+        </div>
+    </div>
     <svg id="cellSvg">
         <% for (var row = 0; row < 5; row++) {%>
             <% for (var col = 0; col < 5; col++) {%>
-                <rect x="calc(20.1% * <%= col %>)" y="calc(20.1% * <%= row %>)" onclick="changeMarked(<%= row %>, <%= col %>)" />
+                <rect onclick="changeMarked(<%= row %>, <%= col %>)" />
             <% } %>
         <% } %>
     </svg>

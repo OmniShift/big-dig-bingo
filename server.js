@@ -102,19 +102,6 @@ app.get('/bingocard=:cardUrl', async (req, res) => {
     }
 });
 
-app.post('/save_card', async(req, res) => {
-    console.log(`Calling POST for \'/save_card\' for cardurl ${req.body.cardUrl} and marked ${JSON.stringify(req.body.marked)}`);
-    try {
-        const client = await pool.connect();
-        await client.query(`UPDATE bingo_cards SET marked = \'${JSON.stringify(req.body.marked)}\' WHERE cardurl = \'${req.body.cardUrl}\'`);
-        client.release();
-        res.send(`success`);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send(`Error 3: Please find your nearest Nook scapegoat for public shaming`);
-    }
-});
-
 app.get('/moderation', async(req, res) => {
     console.log(`Calling GET for \'/moderation\'`);
     if (req.query.password == null) {
@@ -208,6 +195,15 @@ io.on('connection', (socket) => {
     console.log(`User connected`);
     socket.on('disconnect', () => {
         console.log(`User disconnected`);
+    });
+
+    socket.on('save bingocard', (data) => {
+        console.log(`toggling marked cell ${JSON.stringify(data)}`);
+        pool.connect((err, client, done) => {
+            if (err) throw err
+            client.query(`UPDATE bingo_cards SET marked = \'${data.marked}\' WHERE cardurl = \'${data.cardUrl}\'`);
+            client.release();
+        });
     });
 
     socket.on('toggle mark', (data) => {
